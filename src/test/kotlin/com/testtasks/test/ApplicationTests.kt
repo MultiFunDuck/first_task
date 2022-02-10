@@ -2,19 +2,20 @@ package com.testtasks.test
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class ApplicationTests {
 
+    @Autowired
+    private lateinit var controller: Controller
+
     @Test
     fun contextLoads() {
-        assertEquals("кровать", spell("кровать")[0])
-        assertEquals("кровати", spell("кровать")[1])
-        assertEquals("кровати", spell("кровать")[2])
-        assertEquals("кровать", spell("кровать")[3])
-        assertEquals("кроватью", spell("кровать")[4])
-        assertEquals("кровати", spell("кровать")[5])
+
+        val rightSpell = listOf("кровать","кровати","кровати","кровать","кроватью","кровати")
+        assertEquals(rightSpell,controller.get_all_spellings("кровать"))
     }
 
 }

@@ -1,8 +1,11 @@
 package com.testtasks.test
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.*
 import padeg.lib.Padeg
 
@@ -14,24 +17,29 @@ fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }
 
-@Bean
-fun spell(word: String): List<String> {
-    val first_pad: String = Padeg.getAppointmentPadeg(word, 1);
-    val second_pad: String = Padeg.getAppointmentPadeg(word, 2);
-    val third_pad: String = Padeg.getAppointmentPadeg(word, 3);
-    val fourth_pad: String = Padeg.getAppointmentPadeg(word, 4);
-    val fifth_pad: String = Padeg.getAppointmentPadeg(word, 5);
-    val sixth_pad: String = Padeg.getAppointmentPadeg(word, 6);
 
-    return listOf(first_pad, second_pad, third_pad, fourth_pad, fifth_pad, sixth_pad)
+@Service
+class Speller{
+
+
+    fun spell(word: String): List<String> {
+        return List(6) { i -> Padeg.getAppointmentPadeg(word, i+1) }
+    }
+
 }
+
+
 
 @RestController
 @RequestMapping("spell/{word}")
 class Controller{
-    @GetMapping
 
+    @Autowired
+    private lateinit var speller: Speller
+
+    @GetMapping
     fun get_all_spellings(@PathVariable("word") word : String): List<String>{
-        return spell(word)
+        return speller.spell(word)
     }
+
 }
